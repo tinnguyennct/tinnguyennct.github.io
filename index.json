@@ -1,0 +1,120 @@
+[
+{
+	"uri": "/3-deployawssite/3.1-createcfnawssite/",
+	"title": "Create CFN Stack",
+	"tags": [],
+	"description": "",
+	"content": "Login to the console and switch region to Singapore Create CloudFormation Stack Click this template to creating stack CFN Template - AWS Site Download template at here Check the box to acknowledge, then submit the button Create Stack to create stack Track the progress of creating resources at Events tab View generated resources at Resources tab The stack create completed We will receive IP Address of two private instances at tab Outputs Two VPCs created Two private instances created Transit Gateway \u0026amp; two attachments attached to VPC created "
+},
+{
+	"uri": "/4-deployonpremsite/4.1-createcfnonprem/",
+	"title": "Create CFN Stack",
+	"tags": [],
+	"description": "",
+	"content": "Login to the console and switch region to Singapore Create CloudFormation Stack Click this template to creating stack CFN Template - ONPREM Site Download template at here At the configuration Parameters, type the parameters were created in step 2: (1) Public IP Address: 42.115.33.51 (2) Choose Key pair: lab-keypair (3) Submit button Create Stack to create stack Track the progress of creating resources at Events tab View generated resources at Resources tab The stack create completed We will receive IP Addresses of instances at tab Outputs Resources created: VPC EC2 IGW "
+},
+{
+	"uri": "/2-prerequisite/2.1-createkeypair/",
+	"title": "Create SSH Key Pairs",
+	"tags": [],
+	"description": "",
+	"content": "Login to console and switch region to Singapore Create SSH Key Pairs Open the Amazon EC2 console at https://console.aws.amazon.com/ec2 In the navigation pane, choose Key Pairs Click the button Create key pair Config key pair: (1) Name: lab-tinnc-singapore (2) Type: RSA (3) File format: .pem (4) Submit created button Popup save key pair, save to folder you want Successfully created key pair "
+},
+{
+	"uri": "/",
+	"title": "Implement Connection from AWS to OnPrem via Transit Gateway &amp; VPN Site-to-Site",
+	"tags": [],
+	"description": "",
+	"content": "Overview In this lab, we will implement the following architecture to connect two VPCs to ONPREM Networks(simulation) via AWS Transit Gateway \u0026amp; AWS Site-to-Site VPN:\nContents Introduction Preparation Deploy AWS Site Deploy ONPREM Site + VPN S2S Test Connection Cleanup "
+},
+{
+	"uri": "/1-introduce/",
+	"title": "Introduction",
+	"tags": [],
+	"description": "",
+	"content": "Overview In this lab, we will implement the following architecture to connect two VPCs to ONPREM Networks(simulation) via AWS Transit Gateway \u0026amp; AWS Site-to-Site VPN:\nTransit Gateway: Facilitates a hub-and-spoke model where the Transit Gateway acts as the hub, and VPCs connect to it. This simplifies network architecture and reduces the number of peering connections. It\u0026rsquo;s also making it easier to manage and scale as the number of VPCs grows and also support transitive routing.\nTransit Gateway + Site-to-Site VPN: using the Transit Gateway VPN attachment, provides the option of creating an IPsec VPN connection between ONPREM network and the Transit Gateway over the internet. Implement this method when we want to leverage an AWS-managed VPN endpoint to connect to multiple VPCs in the same region without additional costs and manage multiple IPsec VPN connections to multiple Amazon VPCs.\nBy the end of this lab, we will have created the following routing table and security group informations:\nContents Preparation Deploy AWS Site Deploy ONPREM Site Test Connection Cleanup "
+},
+{
+	"uri": "/3-deployawssite/3.2-accesstoec2/",
+	"title": "Access to EC2",
+	"tags": [],
+	"description": "",
+	"content": "Try connect to instances Access to the System Manager console at https://console.aws.amazon.com/systems-manager/ In the navigation pane, choose Session Manager and click the button Start session In the next view, choose an instance 1 and click the button Start session to connect to the first instance Type command to check IP Address: sudo su\rip add Then click the button Terminate to terminate the session, then confirm terminate the session. We will back to Session view, click Start sesionn and choose an instance 2 and click the button Start session to connect to the second instance Type command to check IP Address: sudo su\rip add Then click the button Terminate the session, then confirm terminate the session. Access to private instances successfuly "
+},
+{
+	"uri": "/4-deployonpremsite/4.2-createvpn/",
+	"title": "Create VPN Connection",
+	"tags": [],
+	"description": "",
+	"content": "Login to the console and switch region to Singapore I. Create Customer Gateway Access to VPC Console at https://console.aws.amazon.com/vpcconsole In the navigation pane, choose Customer gateway Create new Customer Gateway (1) CGW Name: Customer Gateway Copy IP Public at Outputs CFN Stack (2) IP Address: 54.251.229.138 (3) Click button Create customer gateway Create CGW successfuly II. Create Transit Gateway Attachment for VPN Access to VPC Console at https://console.aws.amazon.com/vpcconsole In the navigation pane, choose Transit gateway attachments Create new attachment Here, we have two attachments attached to VPCs, that were created by CFN stack Now, we create an attachment that will attach to CGW Name: TGW-VPN-ATTACHMENT Transit gateway ID: choose TGW Attachment type: choose VPN Customer Gateway: choose existing CGW Routing options: Static (With this option, we have to create static route for this TGW attachment, we will create route in below step) Left all default and submit create attachment Create attachment suscessfuly\nWait few minutes for attachment available\nIn the navigation pane, choose Site-to-Site VPN connections After we created TGW attachment for VPN in the step above, it\u0026rsquo;s also created VPN connection Wait few minutes for the VPN connection available Although connection available but tunnels are still down. Next step 4.3 we will configure CGW to up the tunnels "
+},
+{
+	"uri": "/2-prerequisite/2.2-getippublic/",
+	"title": "Getting IP Public Address",
+	"tags": [],
+	"description": "",
+	"content": "Getting the Present IP Public Address Access to URL https://whatismyipaddress.com/ Copy IP address at the field: IPv4 Save it to notepad. "
+},
+{
+	"uri": "/2-prerequisite/",
+	"title": "Preparation ",
+	"tags": [],
+	"description": "",
+	"content": "Preparation This lab needs to be deployed in the Singapore region. We need to create a key pair and check the present public IP to only allow SSH connection to the public instance.\nContents Create SSH Key Pair Check IP Public "
+},
+{
+	"uri": "/4-deployonpremsite/4.3-configurecgw/",
+	"title": "Configure Customer Gateway",
+	"tags": [],
+	"description": "",
+	"content": "Download VPN file configuration In the navigation pane, choose Site-to-Site VPN connections Click button Download Configuration Select vendor is Openswan, then click Download Save the configuration file to local Open the configuration file, we will see configuration of two VPN tunnels SSH to CGW - EC2 Public Copy IP Public at Output of CFN Stack Open terminal, go to the folder contains key pair and SSH to an instance cd /path/to/lab-keypair.pem\rssh -i \u0026#34;lab-keypair.pem\u0026#34; ec2-user@54.251.229.138\rip add Follow steps in the configuration file Config file /etc/ipsec.d/aws.conf vi /etc/ipsec.d/aws.conf conn Tunnel1\rauthby=secret\rauto=start\rleft=%defaultroute\rleftid=54.251.229.138\rright=3.1.243.159\rtype=tunnel\rikelifetime=8h\rkeylife=1h\rphase2alg=aes128-sha1;modp1024\rike=aes128-sha1;modp1024\rkeyingtries=%forever\rkeyexchange=ike\rleftsubnet=192.168.0.0/16\rrightsubnet=10.0.0.0/8\rdpddelay=10\rdpdtimeout=30\rdpdaction=restart_by_peer\roverlapip=yes\rconn Tunnel2\rauthby=secret\rauto=start\rleft=%defaultroute\rleftid=54.251.229.138\rright=18.138.8.9\rtype=tunnel\rikelifetime=8h\rkeylife=1h\rphase2alg=aes128-sha1;modp1024\rike=aes128-sha1;modp1024\rkeyingtries=%forever\rkeyexchange=ike\rleftsubnet=192.168.0.0/16\rrightsubnet=10.0.0.0/8\rdpddelay=10\rdpdtimeout=30\rdpdaction=restart_by_peer\roverlapip=yes - For **Amazon Linux**, we will omit the **auth=esp** line in the original configuration file.\r- Since we only have **1 public IP address** for **Customer Gateway**, we will need to configure **overlapip=yes**.\r- **leftid**: **IP Public Address on the Onprem side**. (Here is public IP of EC2 Customer Gateway in ASG VPN VPC) .\r- **right**: **IP Public Address on AWS VPN Tunnel side**.\r- **leftsubnet**: **CIDR of OnPrem Network** (If there are multiple network layers, you can leave it as 0.0.0.0/0).\r- **rightsubnet**: **CIDR of Private Subnet on AWS** (the CIDR must include all CIDR blocks from VPCs)\rConfig file /etc/ipsec.d/aws.secret vi /etc/ipsec.d/aws.secrets 54.251.229.138 3.1.243.159: PSK \u0026#34;JWG2KTAr11cd_2GuP4LsELpLoWfyzOzp\u0026#34;\r54.251.229.138 18.138.8.9: PSK \u0026#34;sVjOLAPdQ4HM41KN0Fcq27De.RDOCfqj\u0026#34; Restart service service network restart\rchkconfig ipsec on\rservice ipsec start\rservice ipsec status After start ipsec service, we can see two tunnels of VPN connection going up "
+},
+{
+	"uri": "/3-deployawssite/",
+	"title": "Deploy AWS Site",
+	"tags": [],
+	"description": "",
+	"content": "Deploy AWS Site using the CloudFormation Template In this step, we will create:\nTwo VPCs Two private subnets and each EC2 instance in them Transit Gateway and Attachment to attach VPC Interface Endpoint for SSM connection As shown in the following figure:\nSecurity Groups \u0026amp; RTB Informations of AWS Site:\nContents Create CFN Stack Access to EC2 "
+},
+{
+	"uri": "/4-deployonpremsite/4.4-createroute/",
+	"title": "Create static route",
+	"tags": [],
+	"description": "",
+	"content": "I. Create route table for connection from VPC to VPN In the navigation pane, choose Transit gateway route tables Click button Create transit gateway route table Create transit gateway route table Name: TGW-RTB-VPC-TO-VPN Transit gateway ID: choose transit gateway Submit create transit gateway route table Wait few seconds for RTB available With this RTB configuration 4.a Associations:\nCreate association resource type is VPC Choose VPC1 attachment Repeat create association and create for VPC2 attachment 4.b Propagations:\nCreate propagation resource type is VPN Choose VPN attachment Create propagation OK 4.c Route:\nCreate static route CIDR: 192.168.0.0/16 is Onprem network Attachment: choose VPN attachment This shows that two VPCs are associated with the Transit Gateway route table, so traffic coming from that VPC can use this route table. If we use dynamic routing(use BGP), the VPN will automatically propagate their CIDR blocks into the route table. But, we used a static type, so we need to create the static route to tell traffic coming to Onprem network will go to VPN.\nII. Create route table for connection from VPN to VPC Repeat the steps above to create new RTB for transit gateway\nCreate transit gateway route table\nName: TGW-RTB-VPN-TO-VPC Transit gateway ID: choose transit gateway Submit create transit gateway route table With this RTB configuration 3.a Associations:\nCreate association resource type is VPN attachment 3.b Propagations:\nCreate propagation resource type is two VPC attachments 3.c Route:\nWhen we created propagations above, two VPCs will be propagated their CIDR blocks. This shows that VPN associated with the Transit Gateway route table, so traffic coming from that VPN can use this route table. Two VPC will automatically propagate their CIDR blocks into the route table, so their CIDR added to the Route. This allows packets from the VPN to be routed to the VPCs.\n"
+},
+{
+	"uri": "/4-deployonpremsite/",
+	"title": "Deploy OnPrem + VPN S2S",
+	"tags": [],
+	"description": "",
+	"content": "Deploy OnPrem Site using the CloudFormation Template In this step, we will create:\nOne VPCs One public subnet and EC2 instance have Elastic IP in them Internet Gateway As shown in the following figure:\nSecurity Groups \u0026amp; RTB Informations of OnPrem Site:\nCreate VPN Site-to-Site connection We will create TGW Attachment attached to Customer Gateway.\nContents Create CFN Stack Create VPN Connection Configure Customer Gateway Create static route "
+},
+{
+	"uri": "/5-testconnection/",
+	"title": "Test Connection",
+	"tags": [],
+	"description": "",
+	"content": "I. Test connection from VPC to ONPREM Access to EC2 Private on VPCs as Access to EC2\nEC2 Private in VPC 1:\nType command to check connection: sudo su\rping 192.168.1.x(change to IP private of OnPrem) Ping successfully EC2 Private in VPC 2: Type command to check connection: sudo su\rping 192.168.1.x(change to IP private of OnPrem) Ping successfully II. Test connection from ONPREM to VPC Open terminal, then ssh to EC2 in Onprem network Copy IP Public of EC2 from Output of ONPREM CFN stack Type command to ssh: cd /path/to/lab-keypair.pem\rssh ec2@**change to IP Public**\rping 10.10.1.x (**IP Private of EC2 in VPC1**)\rping 10.20.1.x (**IP Private of EC2 in VPC2**) "
+},
+{
+	"uri": "/6-cleanup/",
+	"title": "Cleanup resources",
+	"tags": [],
+	"description": "",
+	"content": "1. Delete VPN Connection created 2. Delete Customer Gateway created 3. Delete all Transit gateway route table created 4. Delete all Transit gateway attachment created 5. Delete two Cloudformation stack created "
+},
+{
+	"uri": "/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]

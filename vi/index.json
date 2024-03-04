@@ -1,0 +1,120 @@
+[
+{
+	"uri": "/vi/1-introduce/",
+	"title": "Giới thiệu",
+	"tags": [],
+	"description": "",
+	"content": "Tổng quan Trong bài lab này, chúng ta sẽ triển khai kiến ​​trúc sau để kết nối hai VPC với Mạng ONPREM (giả lập) thông qua AWS Transit Gateway \u0026amp; AWS Site-to-Site VPN:\nTransit Gateway: Thuận tiện cho việc triển khai kiến trúc hub-and-spoke trong đó Transit Gateway đóng vai trò là trung tâm và các VPC sẽ kết nối với nó. Điều này giúp đơn giản hóa kiến ​​trúc mạng và giảm số lượng kết nối ngang hàng. Nó cũng giúp quản lý, mở rộng quy mô dễ dàng hơn khi số lượng VPC tăng lên và nó cũng hỗ trợ khả năng định tuyến bắc cầu.\nTransit Gateway + Site-to-Site VPN: sử dụng Transit Gateway Attachment VPN, sẽ cung cấp tùy chọn tạo kết nối IPsec VPN giữa ONPREM Network và Transit Gateway qua internet. Triển khai phương pháp này khi chúng ta muốn tận dụng VPN Endpoint do AWS quản lý để kết nối với nhiều VPC trong cùng một Region mà không phải trả thêm chi phí và quản lý nhiều kết nối VPN IPsec tới nhiều VPC.\nĐến cuối bài lab này, ta sẽ tạo ra thông tin về route table và security group như sau:\nNội dung Chuẩn bị Triển khai AWS Site Triển khai ONPREM Site Kiểm tra kết nối Dọn dẹp tài nguyên "
+},
+{
+	"uri": "/vi/3-deployawssite/3.1-createcfnawssite/",
+	"title": "Tạo CFN Stack",
+	"tags": [],
+	"description": "",
+	"content": "Đăng nhập vào console và chuyển region sang Singapore Tạo CloudFormation Stack Bấm vào template này để tạo stack CFN Template - AWS Site Tải template tại đây Bấm vào ô checkbox để xác nhận, sau đó bấm nút Create Stack để tạo stack Theo dõi tiến trình tạo resource tại bảng Events Xem các resources đã được tạo ra tại bảng Resources Hoàn thành tạo stack Chúng ta sẽ nhận được IP Address của hai private instances tại bảng Outputs Hai VPCs được tạo ra Hai EC2 instance được tạo ra Transit Gateway \u0026amp; hai attachments gán vào VPC được tạo ra "
+},
+{
+	"uri": "/vi/4-deployonpremsite/4.1-createcfnonprem/",
+	"title": "Tạo CFN Stack",
+	"tags": [],
+	"description": "",
+	"content": "Đăng nhập vào console và chuyển region sang Singapore Tạo CloudFormation Stack Bấm vào template này để tạo stack CFN Template - Phía ONPREM Tải template tại đây Tại cấu hình Parameters, nhập các thông số đã tạo ở bước 2: (1) Public IP Address: 42.115.33.51 (2) Chọn Key pair: lab-keypair (3) Nhấn nút Create Stack để tạo stack Theo dõi tiến trình tạo resource tại bảng Events Xem các resources đã được tạo ra tại bảng Resources Hoàn thành tạo stack Chúng ta sẽ nhận được các IP Address của instances tại bảng Outputs Các resource được tạo ra: VPC EC2 IGW "
+},
+{
+	"uri": "/vi/2-prerequisite/2.1-createkeypair/",
+	"title": "Tạo SSH Key Pairs",
+	"tags": [],
+	"description": "",
+	"content": "Đăng nhập vào console và chuyển sang region Singapore Tạo SSH Key Pair Mở console của Amazon EC2 tại https://console.aws.amazon.com/ec2 Tại ngăn điều hướng, chọn mục Key Pairs Bấm vào nút Create key pair Cấu hình key pair: (1) Tên: lab-tinnc-singapore (2) Loại: RSA (3) Định dạng file: .pem (4) Nhấn nút tạo Hiển thị popup lưu lại key pair, lưu vào thư mục bạn muốn Tạo key pair thành công "
+},
+{
+	"uri": "/vi/",
+	"title": "Triển khai kết nối từ AWS đến OnPrem qua Transit Gateway &amp; VPN Site-to-Site",
+	"tags": [],
+	"description": "",
+	"content": "Tổng qua Trong bài lab này, chúng ta sẽ triển khai kiến trúc sau đây để thiết lập kết nối giữa hai VPCs đến mạng dưới hạ tầng OnPrem(giả lập) thông qua AWS Transit Gateway \u0026amp; AWS Site-to-Site VPN:\nNội dung Giới thiệu Chuẩn bị Triển khai phía AWS Triển khai phía OnPrem + VPN S2S Kiểm tra kết nối Dọn dẹp "
+},
+{
+	"uri": "/vi/2-prerequisite/",
+	"title": "Các bước chuẩn bị",
+	"tags": [],
+	"description": "",
+	"content": "Chuẩn bị Bài lab này cần được triển khai ở region Singapore. Chúng ta cần tạo một key pair và kiểm tra IP Pulic hiện tại để chỉ cho phép kết nối SSH đến public instance.\nNội dung Tạo SSH Key Kiểm tra IP Public "
+},
+{
+	"uri": "/vi/2-prerequisite/2.2-getippublic/",
+	"title": "Lấy địa chỉ IP Address",
+	"tags": [],
+	"description": "",
+	"content": "Lấy thông tin địa chỉ IP Public hiện tại Truy cập vào URL https://whatismyipaddress.com/ Sao chép địa chỉ IP tại trường: IPv4 Lưu vào notepad. "
+},
+{
+	"uri": "/vi/4-deployonpremsite/4.2-createvpn/",
+	"title": "Tạo kết nối VPN",
+	"tags": [],
+	"description": "",
+	"content": "Đăng nhập vào console và chuyển sang region Singapore I. Tạo Customer Gateway(CGW) Truy cập vào giao diện VPC tại https://console.aws.amazon.com/vpcconsole Tại ngăn điều hướng, chọn Customer gateway Tạo mới Customer Gateway (1) Tên CGW: Customer Gateway Sao chép IP Public tại Outputs của CFN stack (2) IP Address: 54.251.229.138 (3) Nhấn nút Create customer gateway để tạo Tạo CGW thành công II. Tạo Transit Gateway Attachment cho VPN Truy cập vào giao diện VPC tại https://console.aws.amazon.com/vpcconsole Tại ngăn điều hướng, chọn Transit gateway attachments Tạo mới attachment Ở đây, chúng ta có hai attachments đã được attach vào VPC, được tạo ra bởi CFN stack Bây giờ, chúng ta sẽ tạo một attachment để attach vào CGW: Name: TGW-VPN-ATTACHMENT Transit gateway ID: chọn TGW Attachment type: chọn VPN Customer Gateway: chọn CGW đã tạo Routing options: Static (Với option này, chúng ta phải tạo static route cho attachment này, chúng ta sẽ tạo ở bước bên dưới) Để các option khác mặc định và nhấn tạo attachment Tạo attachment thành công\nChờ vài phút cho attachment chuyển sang state available\nTại ngăn điều hướng, chọn Site-to-Site VPN connections Sau khi chúng ta tạo TGW attachment cho VPN ở trên, nó cũng đồng thời tạo ra một VPN connection Chờ vài phút cho VPN connection chuyển sang state available Mặc dù VPN connection available nhưng VPN tunnels vẫn DOWN. Ở bước 4.3 tiếp theo, chúng ta sẽ cấu hình CGW để up các tunnels này. "
+},
+{
+	"uri": "/vi/3-deployawssite/3.2-accesstoec2/",
+	"title": "Truy cập vào EC2",
+	"tags": [],
+	"description": "",
+	"content": "Thử truy cập vào instance Truy cập vào giao diện System Manager https://console.aws.amazon.com/systems-manager/ Tại ngăn điều hướng, chọn Session Manager và bấm vào nút Start session Tại màn hình tiếp theo, chọn instance 1 và bấm vào nút Start session để kết nối vào instance đầu tiên Gõ command sau để kiểm tra IP Address: sudo su\rip add Sau đó nhấn nút Terminate để kết thúc phiên, xác nhận kết thúc phiên. Chúng ta sẽ trở lại màn hình Session, bấm vào nút Start sesionn và chọn tiếp vào instance thứ 2, sau đó bấm nút Start session để kết nối vào instance thứ 2 Gõ command sau để kiểm tra IP Address: sudo su\rip add Sau đó nhấn nút Terminate để kết thúc phiên, xác nhận kết thúc phiên. Truy cập vào hai EC2 private instance thành công. "
+},
+{
+	"uri": "/vi/4-deployonpremsite/4.3-configurecgw/",
+	"title": "Cấu hình Customer Gateway",
+	"tags": [],
+	"description": "",
+	"content": "Tải file cấu hình VPN Tại ngăn điều hướng, chọn Site-to-Site VPN connections Nhấn vào nút Download Configuration Chọn vendor là Openswan, sau đó nhấn Download Lưu file cấu hình vào local Mở file cấu hình, chúng ta sẽ thấy cấu hình của hai VPN tunnels SSH to CGW - EC2 Public Sao chép IP Public tại Output của CFN Stack Mở terminal, đi đến thư mục chứa file keypair.pem và SSH vào instance cd /path/to/lab-keypair.pem\rssh -i \u0026#34;lab-keypair.pem\u0026#34; ec2-user@54.251.229.138\rip add Thực hiện theo các bước trong file cấu hình Cấu hình file /etc/ipsec.d/aws.conf vi /etc/ipsec.d/aws.conf conn Tunnel1\rauthby=secret\rauto=start\rleft=%defaultroute\rleftid=54.251.229.138\rright=3.1.243.159\rtype=tunnel\rikelifetime=8h\rkeylife=1h\rphase2alg=aes128-sha1;modp1024\rike=aes128-sha1;modp1024\rkeyingtries=%forever\rkeyexchange=ike\rleftsubnet=192.168.0.0/16\rrightsubnet=10.0.0.0/8\rdpddelay=10\rdpdtimeout=30\rdpdaction=restart_by_peer\roverlapip=yes\rconn Tunnel2\rauthby=secret\rauto=start\rleft=%defaultroute\rleftid=54.251.229.138\rright=18.138.8.9\rtype=tunnel\rikelifetime=8h\rkeylife=1h\rphase2alg=aes128-sha1;modp1024\rike=aes128-sha1;modp1024\rkeyingtries=%forever\rkeyexchange=ike\rleftsubnet=192.168.0.0/16\rrightsubnet=10.0.0.0/8\rdpddelay=10\rdpdtimeout=30\rdpdaction=restart_by_peer\roverlapip=yes - Đối với **Amazon Linux**, chúng ta sẽ bỏ dòng **auth=esp** trong file cấu hình gốc.\r- Vì chúng ta chỉ có **1 public IP address** cho **Customer Gateway**, chúng ta sẽ cần cấu hình thêm option **overlapip=yes**.\r- **leftid**: **IP Public Address của ONPREM**. (Là IP Public của EC2 Customer Gateway) .\r- **right**: **IP Public Address của AWS VPN Tunnel do AWS tạo ra**.\r- **leftsubnet**: **CIDR của OnPrem Network** (Nếu có nhiều lớp mạng, có thể cấu hình 0.0.0.0/0).\r- **rightsubnet**: **CIDR của Private Subnet trên AWS** (CIDR này phải bao gồm CIDR blocks của các VPCs)\rConfig file /etc/ipsec.d/aws.secret vi /etc/ipsec.d/aws.secrets 54.251.229.138 3.1.243.159: PSK \u0026#34;JWG2KTAr11cd_2GuP4LsELpLoWfyzOzp\u0026#34;\r54.251.229.138 18.138.8.9: PSK \u0026#34;sVjOLAPdQ4HM41KN0Fcq27De.RDOCfqj\u0026#34; Chạy service service network restart\rchkconfig ipsec on\rservice ipsec start\rservice ipsec status Sau khi chạy dịch vụ ipsec, ta có thể thấy hai VPN tunnels sẽ up "
+},
+{
+	"uri": "/vi/3-deployawssite/",
+	"title": "Triển khai phía AWS",
+	"tags": [],
+	"description": "",
+	"content": "Triển khai AWS site sử dụng CloudFormation Trong bước này, chúng ta sẽ tạo:\nHai VPCs Hai private subnet và một EC2 instance trong mỗi subnet Transit Gateway và Attachment để attach vào VPC Interface Endpoint cho kết nối SSM Như thể hiện trong hình sau:\nThông tin về Security Groups \u0026amp; RTB của AWS Site:\nContents Tạo CFN Stack Truy cập vào EC2 "
+},
+{
+	"uri": "/vi/4-deployonpremsite/4.4-createroute/",
+	"title": "Tạo static route",
+	"tags": [],
+	"description": "",
+	"content": "I. Tạo bảng định tuyến cho kết nối từ VPC đến VPN Tại ngăn điều hướng, chọn Transit gateway route tables Nhấn nút Create transit gateway route table Tạo bảng định tuyến transit gateway CIDR: 192.168.0.0/16 (CIDR của Onprem VPC) Attachment: chọn attachment VPN Nhấn tạo bảng định tuyến transit gateway Chờ vài giây để bảng định tuyến available Với cấu hình bảng định tuyến này 4.a Associations:\nTạo association với resource type là VPC Chọn VPC1 attachment Lặp lại bước tạo association và tạo cho VPC2 attachment 4.b Propagations:\nTạo propagation resource type là VPN Chọn VPN attachment Tạo propagation OK 4.c Route:\nTạo định tuyến tĩnh static route CIDR: 192.168.0.0/16 là lớp mạng Onprem Attachment: chọn VPN attachment Điều này cho thấy hai VPC được gán với the Transit Gateway route table này, do đó lưu lượng đến từ VPC có thể sử dụng route table này. Nếu chúng ta dùng dynamic routing(sử dụng BGP), VPN sẽ tự động quảng bá CIDR của nó vào route table. Nhưng, chúng ta sử dụng static route, nên chúng ta cần tạo một static route để nói rằng lưu lượng muốn đi đến lớp mạng Onprem thì cần đi qua VPN.\nII. Tạo bảng định tuyến cho kết nối từ VPN đến VPC Lặp lại các bước ở trên để tạo mới một bảng định tuyến cho transit gateway\nTạo bảng định tuyến transit gateway\nName: TGW-RTB-VPN-TO-VPC Transit gateway ID: chọn transit gateway Nhấn tạo bảng định tuyến transit gateway Với cấu hình bảng định tuyến này 3.a Associations:\nTạo association với resource type là VPN attachment 3.b Propagations:\nTạo propagation với resource type là hai VPC attachments 3.c Route:\nKhi tạo xong propagations ở trên, hai VPC sẽ quảng bá CIDR blocks của nó. Điều này cho thấy VPN được gán với Transit Gateway route table này, lưu lượng đến từ VPN có thể sử dụng route table này. Hai VPC sẽ tự động quảng bá CIDR của nó vào route table(cấu hình TGW attachment trong CFN stack), vì vậy CIDR của hai VPC sẽ được thêm vào Route. Cho phép packets từ VPN có thể định tuyến đến VPC.\n"
+},
+{
+	"uri": "/vi/4-deployonpremsite/",
+	"title": "Triển khai phía OnPrem + VPN S2S",
+	"tags": [],
+	"description": "",
+	"content": "Triển khai OnPrem sử dụng CloudFormation Trong bước này, chúng ta sẽ tạo:\nMột VPCs Một public subnet và một EC2 instance trong nó Internet Gateway Như thể hiện trong hình sau:\nThông tin về Security Groups \u0026amp; RTB của OnPrem Site:\nTạo kết nối VPN Site-to-Site Chúng ta sẽ tạo một TGW attachment và attach vào Customer Gateway.\nContents Tạo CFN Stack Tạo kết nối VPN Cấu hình Customer Gateway Tạo static route "
+},
+{
+	"uri": "/vi/5-testconnection/",
+	"title": "Kiểm tra kết nối",
+	"tags": [],
+	"description": "",
+	"content": "I. Kiếm tra kết nối từ VPC đến ONPREM Truy cập vào EC2 Private trên VPC như bước Access to EC2\nEC2 Private trong VPC 1:\nNhập lệnh sau để kiểm tra kết nối: sudo su\rping 192.168.1.x(thay đổi thành IP private của EC2 mạng Onprem) Ping thành công EC2 Private trong VPC 2: Nhập lệnh sau để kiểm tra kết nối: sudo su\rping 192.168.1.x(thay đổi thành IP private của EC2 mạng Onprem) Ping thành công II. Kiểm tra kết nối từ ONPREM đến VPC Mở terminal, sau đó ssh đến EC2 trong mạng OnPrem Sao chép IP Public của EC2 tại Output của ONPREM CFN stack Nhập command để SSH: cd /path/to/lab-keypair.pem\rssh ec2@**đổi thành IP Public**\rping 10.10.1.x (**IP Private của EC2 trong VPC1**)\rping 10.20.1.x (**IP Private của EC2 trong VPC2**) "
+},
+{
+	"uri": "/vi/6-cleanup/",
+	"title": "Dọn dẹp tài nguyên",
+	"tags": [],
+	"description": "",
+	"content": "1. Xóa VPN Connection đã tạo 2. Xóa Customer Gateway đã tạo 3. Xóa tất cả Transit gateway route table đã tạo 4. Xóa tất cả Transit gateway attachment đã tạo 5. Xóa hai Cloudformation stack đã tạo "
+},
+{
+	"uri": "/vi/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "/vi/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+}]
